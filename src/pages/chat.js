@@ -1,21 +1,66 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import appConfig from '../../config.json';
+import { createClient } from '@supabase/supabase-js'
+
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzM4MTIwNSwiZXhwIjoxOTU4OTU3MjA1fQ.--48eB-JVHUNn2hfn7p4HKXj7X1Dvz75X8mqoFxeiNk'
+const SUPABASE_URL = 'https://jmcjccwwjkyzptrjjohm.supabase.co'
+const SUPABASE_CLIENTE = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+// fetch('${SUPABASE_URL}/rest/v1)/messages?select=*', { 
+// 	headers: {
+// 		'Content-Tyoe': 'application/json',
+// 		'apikey': supabaseAnonKey,
+// 		'Authorization': 'Bearer ' + supabaseAnKey,
+// 	}
+// })
+
+// .then((res) => { 
+// 	return res.json();
+// })
+
+// .then((response) = > {
+// 	console.log(response);
+// });
+
 
 export default function ChatPage() {
     // Sua lógica vai aqui
     const [mensagem, setMensagem] = useState('')
     const [listaDeMensagens, setListaDeMensagens] = useState([])
+    
+    // const dadosDoSupabase = 
+
+    useEffect(() => {
+        SUPABASE_CLIENTE
+            .from('mensagens')
+            .select('*')
+            .order('id', {ascending: false})
+            .then((dados) => {
+                console.log('Dados da consulta: ', dados)
+                setListaDeMensagens(dados.data)
+            })
+    }, [])
+    
 
     function handleNovaMensagem(novaMensagem) {
 
         const mensagem = {
-            id: listaDeMensagens.length + 1,
+            // id: listaDeMensagens.length + 1,
             de: 'CaioLima96',
             texto: novaMensagem,
         }
 
-        setListaDeMensagens([ mensagem, ...listaDeMensagens, ]);
+        SUPABASE_CLIENTE
+            .from('mensagens')
+            .insert([mensagem])
+            .then(({data}) => {
+                console.log('Criando a mensagem: ', data)
+                setListaDeMensagens([ data[0], ...listaDeMensagens, ]);
+
+            })
+
         setMensagem('');
     }
 
@@ -92,7 +137,12 @@ export default function ChatPage() {
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
                         />
-                        
+                            <button 
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    handleNovaMensagem(mensagem);
+                                }}
+                            >ok</button>
                     </Box>
                 </Box>
             </Box>
@@ -159,7 +209,7 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/caiolima96.png`}
+                                src={`https://github.com/${mensagem.de}.png`}
                             />
                             <Text tag="strong">
                                 {mensagem.de}
