@@ -1,44 +1,11 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import { Box, Button, Text, TextField, Image } from '@skynexui/components'
 import appConfig from '../../config.json'
 
 import TitleComp from "../components/TitleComp"
 
-function GlobalStyle() {
-	return (
-		<style global jsx>{`
-            @import url('https://fonts.googleapis.com/css2?family=Bilbo+Swash+Caps&display=swap');
 
-            *, *::after, *::before  {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: 'Roboto', sans-serif;
-                list-style: none;
-            }
-
-            body {
-                background-color: gray;
-            }
-            
-
-            /* App fit Height */ 
-
-            html, body, #__next {
-                min-height: 100vh;
-                display: flex;
-                flex: 1;
-            }
-            #__next {
-                flex: 1;
-            }
-            #__next > * {
-                flex: 1;
-            }
-             
-        `}</style>
-	)
-}
 
 
 
@@ -58,20 +25,23 @@ function GlobalStyle() {
 
 
 export default function PaginaInicial() {
-	// const username = 'CaioLima96'
+	// const username = 'CaioLima96' https://i.pinimg.com/originals/db/66/d9/db66d91550deb3815c310363aea38144.jpg
 
 	const [username, setUserName] = React.useState('CaioLima96')
+	const roteamento = useRouter()
 
 	return (
 		<>
-			<GlobalStyle />
+			
 			<Box
 				styleSheet={{
 					display: 'flex', alignItems: 'center', justifyContent: 'center',
-					backgroundColor: appConfig.theme.colors.primary[500],
-					backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+					// backgroundColor: appConfig.theme.colors.primary[500],
+					// backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+					backgroundImage: 'url(https://i.ytimg.com/vi/JHhnLfpjIwU/maxresdefault.jpg)',
 					backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
 				}}
+				
 			>
 				<Box
 					styleSheet={{
@@ -79,7 +49,7 @@ export default function PaginaInicial() {
 						alignItems: 'center',
 						justifyContent: 'space-between',
 						flexDirection: {
-							xs: 'column',
+							xs: 'column-reverse',
 							sm: 'row',
 						},
 						width: '100%', maxWidth: '700px',
@@ -91,6 +61,10 @@ export default function PaginaInicial() {
 					{/* Formulário */}
 					<Box
 						as="form"
+						onSubmit = {(event) =>{
+							event.preventDefault()
+							roteamento.push('/chat')
+						}}
 						styleSheet={{
 							display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
 							width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
@@ -101,16 +75,27 @@ export default function PaginaInicial() {
 							{appConfig.name}
 						</Text>
 
-						<input type="text" value={username} onChange={(event) =>{ 
+						{/* <input type="text" value={username} 
+						onChange={(event) =>{ 
 							
 							//Pega o valor
 							const valor = event.target.value
 							
 							//troca o valor da variavel
 							setUserName(valor)
-						}}/>
+						}
+						}/> */}
 
-						{/* <TextField
+						<TextField
+							value={username}
+							onChange={(event) =>{ 
+							
+								//Pega o valor
+								const valor = event.target.value
+								
+								//troca o valor da variavel
+								setUserName(valor)
+							}}
 							fullWidth
 							textFieldColors={{
 								neutral: {
@@ -120,7 +105,7 @@ export default function PaginaInicial() {
 									backgroundColor: appConfig.theme.colors.neutrals[800],
 								},
 							}}
-						/> */}
+						/>
 						<Button
 							type='submit'
 							label='Entrar'
@@ -149,7 +134,7 @@ export default function PaginaInicial() {
 							borderColor: appConfig.theme.colors.neutrals[999],
 							borderRadius: '10px',
 							flex: 1,
-							minHeight: '240px',
+							// minHeight: '240px',
 						}}
 					>
 						<Image
